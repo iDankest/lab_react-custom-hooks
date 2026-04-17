@@ -1,30 +1,10 @@
 // src/components/UserGists.jsx
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useFetch } from "../hooks/useFetch";
 
 const UserGists = () => {
-  const [gists, setGists] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const username = 'gaearon'; // A famous React developer!
-
-  useEffect(() => {
-    const fetchGists = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.github.com/users/${username}/gists`,
-        );
-        setGists(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGists();
-  }, []); // The username is hardcoded, so we still run once
-
+  const {data : gists, loading, error} = useFetch(`https://api.github.com/users/${username}/gists`);
+  
   if (loading) return <p>Loading {username}'s gists...</p>;
   if (error) return <p>Error fetching gists: {error.message}</p>;
 
